@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Painel do Usuário</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f3f3;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .painel {
+        background: white;
+        max-width: 800px;
+        margin: auto;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        margin-top: 0;
+        text-align: center;
+      }
+
+      .user-info,
+      .docs,
+      .upload {
+        margin-top: 20px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      li a {
+        text-decoration: none;
+        color: #007bff;
+      }
+
+      li a:hover {
+        text-decoration: underline;
+      }
+
+      .logout {
+        margin-top: 30px;
+        text-align: center;
+      }
+
+      .logout button {
+        background-color: #d9534f;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .logout button:hover {
+        background-color: #c9302c;
+      }
+
+      .upload {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 10px;
+      }
+
+      .upload form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .delete-btn {
+        background: none;
+        border: none;
+        color: red;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="painel">
+      <h1>Bem-vindo, <span id="nomeUsuario">Usuário</span></h1>
+
+      <div class="user-info">
+        <h2>Seus dados:</h2>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Telefone:</strong> <span id="phone"></span></p>
+        <p><strong>Gênero:</strong> <span id="gender"></span></p>
+        <p><strong>CPF:</strong> <span id="cpf"></span></p>
+        <p><strong>Endereço:</strong> <span id="address"></span></p>
+        <p><strong>Vale Transporte:</strong> <span id="vt"></span></p>
+        <p><strong>Deficiência:</strong> <span id="deficiencia"></span></p>
+        <p><strong>Observações:</strong> <span id="obs"></span></p>
+      </div>
+
+      <div class="docs">
+        <h2>Seus Documentos:</h2>
+        <ul id="listaDocs">
+          <li>Carregando documentos...</li>
+        </ul>
+      </div>
+
+      <div class="upload">
+        <h2>Enviar novo documento:</h2>
+        <form id="uploadForm">
+          <label for="documento">Selecione o arquivo:</label>
+          <input type="file" name="file" id="documento" required />
+          <select name="document_type" required>
+            <option value="">Tipo do documento</option>
+            <option value="rg">RG</option>
+            <option value="cpf">CPF</option>
+            <option value="comprovanteResidencia">
+              Comprovante de Residência
+            </option>
+            <option value="outro">Outro</option>
+          </select>
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+
+      <div class="logout">
+        <button onclick="logout()">Sair</button>
+      </div>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Você precisa estar logado para acessar esta página.");
+        window.location.href = "Pagina1_Login.html";
+      }
+
+      function logout() {
+        localStorage.removeItem("token");
+        window.location.href = "Pagina1_Login.html";
+      }
+
+      function carregarUsuario() {
+        fetch("http://localhost:3000/api/auth/me", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Não autorizado");
+            return res.json();
+          })
+          .then((user) => {
+            document.getElementById("nomeUsuario").textContent =
+              user.firstname + " " + user.lastname;
+            document.getElementById("email").textContent = user.email || "-";
+            document.getElementById("phone").textContent = user.phone || "-";
+            document.getElementById("gender").textContent = user.gender || "-";
+            document.getElementById("cpf").textContent = user.cpf || "-";
+            document.getElementById("address").textContent =
+              user.address || "-";
+            document.getElementById("vt").textContent = user.vale_transporte
+              ? "Sim"
+              : "Não";
+            document.getElementById("deficiencia").textContent =
+              user.possui_deficiencia ? "Sim" : "Não";
+            document.getElementById("obs").textContent =
+              user.observacoes || "-";
+
+            const lista = document.getElementById("listaDocs");
+            lista.innerHTML = "";
+
+            if (user.arquivos && user.arquivos.length > 0) {
+              user.arquivos.forEach((doc) => {
+                if (doc.filename) {
+                  const item = document.createElement("li");
+                  item.innerHTML = `
+                  <span><a href="${doc.path
+                    .replace("backend", "")
+                    .replace(/\\/g, "/")}" target="_blank">${
+                    doc.document_type
+                  }</a></span>
+                  <button class="delete-btn" onclick="excluirArquivo(${
+                    doc.id
+                  })">Excluir</button>
+                `;
+                  lista.appendChild(item);
+                }
+              });
+            } else {
+              lista.innerHTML = "<li>Nenhum documento enviado.</li>";
+            }
+          })
+          .catch((err) => {
+            alert("Erro ao carregar dados. Faça login novamente.");
+            logout();
+          });
+      }
+
+      carregarUsuario();
+
+      // Envio de novo arquivo
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const userId = JSON.parse(atob(token.split(".")[1])).userId;
+
+          const formData = new FormData();
+          formData.append("userId", userId);
+          formData.append(
+            "file",
+            document.getElementById("documento").files[0]
+          );
+          formData.append("document_type", this.document_type.value);
+
+          try {
+            const response = await fetch(
+              "http://localhost:3000/api/auth/upload-multiple",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Documento enviado com sucesso!");
+              carregarUsuario(); // Atualiza lista
+            } else {
+              alert("Erro: " + (result.error || result.details));
+            }
+          } catch (err) {
+            alert("Erro ao enviar: " + err.message);
+          }
+        });
+
+      function excluirArquivo(id) {
+        if (!confirm("Tem certeza que deseja excluir este documento?")) return;
+
+        fetch(`http://localhost:3000/api/auth/files/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            alert(result.message || "Documento excluído");
+            carregarUsuario();
+          })
+          .catch((err) => {
+            alert("Erro ao excluir documento: " + err.message);
+          });
+      }
+    </script>
+  </body>
+</html>

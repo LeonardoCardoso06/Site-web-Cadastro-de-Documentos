@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Pagina4_Arquivos.css" />
+    <title>Cadastro de Documentos</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="logo-placeholder">
+          <img src="1 2.png" alt="Logo da Empresa" />
+        </div>
+        <h1>Cadastro de Documentos</h1>
+      </header>
+      <div class="painel-button-fixed">
+        <button onclick="window.location.href='Painelusuario.html'">
+          Painel do Usuário
+        </button>
+        <form
+          id="documentForm"
+          action="/upload"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="list">
+            <div class="form-group">
+              <label for="rgCnh">RG/CNH:</label>
+              <input type="file" id="rgCnh" name="rgCnh" required />
+              <label for="rgCnh" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="rgCnhName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="comprovanteResidencia"
+                >Comprovante de Residência:</label
+              >
+              <input
+                type="file"
+                id="comprovanteResidencia"
+                name="comprovanteResidencia"
+                required
+              />
+              <label for="comprovanteResidencia" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="comprovanteResidenciaName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="tituloEleitor">Título de Eleitor:</label>
+              <input
+                type="file"
+                id="tituloEleitor"
+                name="tituloEleitor"
+                required
+              />
+              <label for="tituloEleitor" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="tituloEleitorName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="certidaoMilitar"
+                >Certidão de Alistamento Militar (somente homens):</label
+              >
+              <input type="file" id="certidaoMilitar" name="certidaoMilitar" />
+              <label for="certidaoMilitar" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="certidaoMilitarName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="exameMedico">Exame Médico Admissional:</label>
+              <input type="file" id="exameMedico" name="exameMedico" required />
+              <label for="exameMedico" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="exameMedicoName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="historicoEscolar">Histórico Escolar:</label>
+              <input
+                type="file"
+                id="historicoEscolar"
+                name="historicoEscolar"
+                required
+              />
+              <label for="historicoEscolar" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="historicoEscolarName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="pis">PIS (opcional):</label>
+              <input type="file" id="pis" name="pis" />
+              <label for="pis" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="pisName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="carteirinha">Carteirinha OAB/CRC (opcional):</label>
+              <input type="file" id="carteirinha" name="carteirinha" />
+              <label for="carteirinha" class="file-upload-label"
+                >Escolha um arquivo</label
+              >
+              <div class="file-name" id="carteirinhaName">
+                Nenhum arquivo selecionado
+              </div>
+            </div>
+          </div>
+          <div class="save-button">
+            <button type="submit">Salvar</button>
+          </div>
+        </form>
+        <div id="fileList"></div>
+      </div>
+    </div>
+
+    <script>
+      async function verificarProgresso() {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          alert("Você precisa estar logado.");
+          window.location.href = "Pagina1_Login.html";
+          return;
+        }
+
+        try {
+          const response = await fetch("http://localhost:3000/api/auth/me", {
+            method: "GET",
+            headers: { Authorization: "Bearer " + token },
+          });
+
+          const result = await response.json();
+
+          if (
+            !response.ok ||
+            !result.birthdate ||
+            !result.cpf ||
+            !result.address
+          ) {
+            // Redireciona caso faltem dados essenciais
+            alert("Complete suas informações antes de continuar.");
+            window.location.href = "Pagina3_InfoAdicionais.html";
+          }
+        } catch (err) {
+          alert("Erro ao verificar dados do usuário. Faça login novamente.");
+          localStorage.removeItem("token");
+          window.location.href = "Pagina1_Login.html";
+        }
+      }
+
+      verificarProgresso();
+      document
+        .getElementById("documentForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const userId = localStorage.getItem("userId");
+          if (!userId) {
+            alert("Usuário não identificado.");
+            return;
+          }
+
+          const formData = new FormData(this);
+          formData.append("userId", userId);
+
+          try {
+            const response = await fetch(
+              "http://localhost:3000/api/auth/upload-multiple",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Documentos enviados com sucesso!");
+              // Redirecionar ou finalizar
+              window.location.href = "Pagina1_Login.html";
+            } else {
+              alert("Erro: " + (result.error || result.details));
+            }
+          } catch (err) {
+            alert("Erro ao enviar arquivos: " + err.message);
+          }
+
+          function irParaPainel() {
+            window.location.href = "Painelusuario.html";
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(45deg, #00f7ff, #0345a7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  animation: gradientAnimation 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 2s ease-in-out;
+  width: 90%;
+  max-width: 1200px;
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.logo-placeholder {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100px; /* Ajuste o tamanho conforme necessário */
+  height: auto;
+  z-index: 2;
+}
+
+.logo-placeholder img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-top: 60px;
+}
+
+h1 {
+  font-size: 3rem;
+  color: #0578adf5;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.274);
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+  margin-top: 250px;
+  z-index: 1;
+  top: -20px;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1 1 calc(50% - 20px);
+  margin-bottom: 20px;
+  border: 2px dashed #808080;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.form-group:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.file-upload-label {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #00aefff5;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.file-upload-label:hover {
+  background-color: #005bb5;
+}
+
+.file-upload-label:focus {
+  outline: 2px solid #005bb5;
+  outline-offset: 2px;
+}
+
+.file-name {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #555;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.save-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.save-button button {
+  padding: 10px 20px;
+  border: none;
+  background: linear-gradient(rgb(7, 193, 255), rgb(10, 110, 192));
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.save-button button:hover {
+  background: linear-gradient(rgb(7, 193, 255), rgb(4, 78, 139));
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .form-group {
+    flex: 1 1 100%;
+  }
+}
+
+.logo-placeholder {
+  width: 200px;
+  top: 100px;
+}
+.painel-button-container {
+  text-align: center;
+  margin-top: 30px;
+  margin-left: 10;
+}
+
+.painel-button {
+  padding: 12px 30px;
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.painel-button:hover {
+  background: linear-gradient(45deg, #0056b3, #003f88);
+  transform: scale(1.05);
+}

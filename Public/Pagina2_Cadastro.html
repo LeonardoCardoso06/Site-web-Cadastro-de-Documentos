@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Pagina2_Cadastro.css" />
+    <title>Cadastro</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-image">
+        <img src="LogoPequeno.png" alt="Logo" />
+      </div>
+      <div class="form">
+        <h1>Cadastro</h1>
+        <form id="registrationForm" enctype="multipart/form-data">
+          <div class="input-group">
+            <label for="firstname">Nome</label>
+            <input id="firstname" type="text" name="firstname" required />
+            <label for="lastname">Sobrenome</label>
+            <input id="lastname" type="text" name="lastname" required />
+            <label for="email">E-mail</label>
+            <input id="email" type="email" name="email" required />
+            <label for="password">Senha</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              minlength="8"
+              required
+            />
+            <label for="phone">Telefone</label>
+            <input id="phone" type="tel" name="phone" required />
+          </div>
+
+          <div class="gender-group">
+            <div class="gender-input">
+              <input type="radio" name="gender" value="male" required />
+              <label>Masculino</label>
+            </div>
+            <div class="gender-input">
+              <input type="radio" name="gender" value="female" required />
+              <label>Feminino</label>
+            </div>
+          </div>
+
+          <div
+            class="picture"
+            onclick="document.getElementById('picture__input').click()"
+          >
+            <img id="picturePreview" alt="Prévia da Foto" />
+            <label class="picture-label">Adicionar Foto</label>
+            <input
+              type="file"
+              id="picture__input"
+              name="picture__input"
+              accept="image/*"
+              onchange="previewImage(event)"
+            />
+          </div>
+
+          <div class="button">
+            <button type="submit">Cadastrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+
+          try {
+            const response = await fetch(
+              "http://localhost:3000/api/auth/register",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+
+            const result = await response.json();
+
+            if (response.ok) {
+              const email = formData.get("email");
+              const password = formData.get("password");
+
+              // Salva ID para os próximos passos
+              localStorage.setItem("userId", result.userId);
+
+              // 🟡 Faz login automático após o cadastro
+              const loginResponse = await fetch(
+                "http://localhost:3000/api/auth/login",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email, password }),
+                }
+              );
+
+              const loginResult = await loginResponse.json();
+
+              if (loginResponse.ok && loginResult.token) {
+                localStorage.setItem("token", loginResult.token);
+                localStorage.setItem("userName", loginResult.user.name);
+                localStorage.setItem("userId", loginResult.user.id);
+              }
+
+              // Redireciona para informações adicionais
+              window.location.href = "Pagina3_InfoAdicionais.html";
+            } else {
+              alert("Erro ao cadastrar: " + (result.error || result.details));
+            }
+          } catch (err) {
+            alert("Erro no envio: " + err.message);
+          }
+        });
+    </script>
+  </body>
+</html>

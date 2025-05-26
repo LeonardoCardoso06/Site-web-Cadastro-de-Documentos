@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="PaginaAdmin.css" />
+    <title>Área Administrativa</title>
+  </head>
+  <body>
+    <div class="admin-container">
+      <header class="admin-header">
+        <div class="logo-placeholder">
+          <img src="1 2.png" alt="Logo da Empresa" />
+        </div>
+        <h1>Painel Administrativo</h1>
+      </header>
+
+      <nav class="admin-nav">
+        <ul>
+          <li><a href="#users">Gerenciar Usuários</a></li>
+          <li><a href="#documents">Gerenciar Documentos</a></li>
+          <li><a href="#settings">Configurações</a></li>
+          <li><a href="#logs">Logs e Auditoria</a></li>
+        </ul>
+      </nav>
+
+      <main class="admin-content">
+        <section id="documents">
+          <h2>Gerenciar Documentos</h2>
+          <div class="search-bar">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Pesquisar por nome..."
+            />
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Gênero</th>
+                <th>CPF</th>
+                <th>Endereço</th>
+                <th>Documentos</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Você precisa estar logado.");
+        window.location.href = "Pagina1_Login.html";
+      }
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+
+      if (!payload.isAdmin) {
+        alert("Acesso restrito a administradores.");
+        window.location.href = "Painelusuario.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("http://localhost:3000/api/auth/admin/usuarios", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const tableBody = document.getElementById("userTableBody");
+            tableBody.innerHTML = "";
+
+            data.forEach((user) => {
+              const arquivos = (user.arquivos || [])
+                .filter((doc) => doc.filename)
+                .map(
+                  (doc) => `
+                    <li>
+                      <a href="${doc.filepath
+                        .replace("backend", "")
+                        .replace(/\\/g, "/")}" target="_blank">
+                        ${doc.document_type}
+                      </a>
+                    </li>`
+                )
+                .join("");
+
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.firstname} ${user.lastname}</td>
+                <td>${user.gender || "-"}</td>
+                <td>${user.cpf || "-"}</td>
+                <td>${user.address || "-"}</td>
+                <td><ul>${arquivos || "Nenhum documento"}</ul></td>
+              `;
+
+              tableBody.appendChild(row);
+            });
+
+            // 🔍 Pesquisa
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+              const filter = searchInput.value.toLowerCase();
+              const rows = tableBody.getElementsByTagName("tr");
+              Array.from(rows).forEach((row) => {
+                const cells = row.getElementsByTagName("td");
+                const match = Array.from(cells).some((cell) =>
+                  cell.textContent.toLowerCase().includes(filter)
+                );
+                row.style.display = match ? "" : "none";
+              });
+            });
+          })
+          .catch((error) => {
+            console.error("Erro ao carregar usuários:", error);
+            alert("Erro ao carregar usuários.");
+          });
+      });
+    </script>
+  </body>
+</html>

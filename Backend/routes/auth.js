@@ -53,7 +53,6 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Senha incorreta" });
     }
 
-    // Verificar se o usuário tem informações adicionais
     const infoResult = await pool.query(
       "SELECT * FROM user_details WHERE user_id = $1",
       [user.id]
@@ -82,7 +81,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// === Salvar informações adicionais ===
+// === Informações adicionais ===
 router.post("/details", async (req, res) => {
   const {
     userId,
@@ -127,27 +126,41 @@ router.post("/details", async (req, res) => {
   }
 });
 
-// === Upload múltiplo de documentos ===
+// === Upload múltiplo de documentos com caminhos corrigidos ===
 const storageMulti = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, "../uploads")),
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../uploads"));
+  },
   filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = path.basename(file.originalname, ext).replace(/\s+/g, "-");
     const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, unique + "-" + file.originalname);
+    cb(null, `${unique}-${base}${ext}`);
   },
 });
 const uploadMulti = multer({ storage: storageMulti });
 
 router.post("/upload-multiple", uploadMulti.any(), async (req, res) => {
   const userId = req.body.userId;
+  const files = req.files;
+
   if (!userId)
     return res.status(400).json({ error: "ID do usuário não fornecido." });
+  if (!files || files.length === 0)
+    return res.status(400).json({ error: "Nenhum arquivo enviado." });
 
   try {
-    const queries = req.files.map((file) =>
+    const queries = files.map((file) =>
       pool.query(
         `INSERT INTO user_files (user_id, document_type, filename, filepath, mimetype)
          VALUES ($1, $2, $3, $4, $5)`,
-        [userId, file.fieldname, file.originalname, file.path, file.mimetype]
+        [
+          userId,
+          file.fieldname,
+          file.originalname,
+          `uploads/${file.filename}`, // ✅ Salvar caminho relativo
+          file.mimetype,
+        ]
       )
     );
 
@@ -191,7 +204,7 @@ router.get("/me", verificarToken, async (req, res) => {
   }
 });
 
-// Rota para excluir arquivos do usuário
+// === Excluir arquivo ===
 router.delete("/files/:id", verificarToken, async (req, res) => {
   const fileId = req.params.id;
 
@@ -199,13 +212,12 @@ router.delete("/files/:id", verificarToken, async (req, res) => {
     const result = await pool.query("SELECT * FROM user_files WHERE id = $1", [
       fileId,
     ]);
-    if (result.rows.length === 0) {
+    if (result.rows.length === 0)
       return res.status(404).json({ error: "Arquivo não encontrado" });
-    }
 
     const file = result.rows[0];
-    fs.unlink(file.filepath, (err) => {
-      if (err) console.warn("Erro ao remover arquivo físico, continuando...");
+    fs.unlink(path.join(__dirname, "..", file.filepath), (err) => {
+      if (err) console.warn("Erro ao remover arquivo físico:", err.message);
     });
 
     await pool.query("DELETE FROM user_files WHERE id = $1", [fileId]);
@@ -216,6 +228,18 @@ router.delete("/files/:id", verificarToken, async (req, res) => {
       .status(500)
       .json({ error: "Erro ao excluir arquivo", details: err.message });
   }
+});
+
+// === Download de arquivo ===
+router.get("/download/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, "../uploads", filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send("Arquivo não encontrado.");
+  }
+
+  res.download(filePath);
 });
 
 module.exports = router;

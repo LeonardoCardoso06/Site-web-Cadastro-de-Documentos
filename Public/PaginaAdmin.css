@@ -24,6 +24,7 @@ body {
   }
 }
 
+.container,
 .admin-container {
   background-color: rgba(255, 255, 255, 0.95);
   padding: 40px;
@@ -45,6 +46,7 @@ body {
   }
 }
 
+.header,
 .admin-header {
   text-align: center;
   margin-bottom: 40px;
@@ -67,41 +69,29 @@ h1 {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
 }
 
-/* Navegação do admin */
-.admin-nav {
-  margin-bottom: 30px;
+.painel-button-container {
+  text-align: center;
+  margin-top: 30px;
 }
 
-.admin-nav ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.admin-nav ul li {
-  background-color: #f0f8ff;
-  border-radius: 10px;
-  padding: 12px 24px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.admin-nav ul li:hover {
-  background-color: #e0f7fa;
-  transform: translateY(-4px);
-}
-
-.admin-nav ul li a {
-  text-decoration: none;
-  color: #0578adf5;
+.painel-button {
+  padding: 12px 30px;
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Conteúdo principal */
+.painel-button:hover {
+  background: linear-gradient(45deg, #0056b3, #003f88);
+  transform: scale(1.05);
+}
+
 .admin-content {
   margin-top: 20px;
 }
@@ -114,15 +104,19 @@ h1 {
   font-weight: bold;
 }
 
-.search-bar {
+.search-bar,
+.search-input {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-}
-
-.search-bar input[type="text"] {
   width: 100%;
   max-width: 400px;
+  margin: 0 auto 20px auto;
+}
+
+.search-bar input[type="text"],
+.search-input {
+  width: 100%;
   padding: 10px 15px;
   border: 2px solid #00aefff5;
   border-radius: 10px;
@@ -130,13 +124,13 @@ h1 {
   transition: all 0.3s ease;
 }
 
-.search-bar input[type="text"]:focus {
+.search-bar input[type="text"]:focus,
+.search-input:focus {
   border-color: #005bb5;
   box-shadow: 0 0 6px rgba(0, 174, 255, 0.3);
   outline: none;
 }
 
-/* Tabela responsiva e estilizada */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -176,14 +170,14 @@ td a:hover {
   text-decoration: underline;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
   .admin-nav ul {
     flex-direction: column;
     align-items: center;
   }
 
-  .search-bar input[type="text"] {
+  .search-bar input[type="text"],
+  .search-input {
     width: 90%;
   }
 
@@ -191,4 +185,85 @@ td a:hover {
   td {
     font-size: 0.85rem;
   }
+}
+
+/* Estilo do modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  animation: slideIn 0.5s ease;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #000;
+}
+
+.doc-list a,
+.documento-item a {
+  display: inline-block;
+  margin: 10px 10px;
+  padding: 10px 15px;
+  background-color: #00aeff;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.doc-list a:hover,
+.documento-item a:hover {
+  background-color: #007ecb;
+}
+
+.modal-button {
+  padding: 8px 16px;
+  background-color: #007ecb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-button:hover {
+  background-color: #005a94;
 }

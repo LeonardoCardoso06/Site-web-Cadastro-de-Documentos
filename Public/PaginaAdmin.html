@@ -1,131 +1,297 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel Administrativo</title>
     <link rel="stylesheet" href="PaginaAdmin.css" />
-    <title>Área Administrativa</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-Z9oZBpZs9BScwY/OaHv3ZQZ9d9IozS0zPGfNnGmwPtBKrDiy+lDnAVOb2pN+rwJrheOLiw84cM7z9d14+L3Dw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      .documentos-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 20px;
+      }
+      .documento-item {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        background: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .delete-btn {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 7px;
+        transition: transform 0.2s ease;
+      }
+      .delete-btn i {
+        color: red;
+        font-size: 20px;
+        transition: transform 0.2s ease;
+      }
+      .delete-btn:hover i {
+        transform: scale(1.2);
+        color: darkred;
+      }
+      tr.deletando {
+        background-color: #ffe6e6 !important;
+        transition: background-color 0.3s ease;
+      }
+      .excluir-coluna {
+        display: none;
+      }
+      .exibir-exclusao th.excluir-coluna,
+      .exibir-exclusao td.excluir-coluna {
+        display: table-cell;
+      }
+    </style>
   </head>
   <body>
-    <div class="admin-container">
-      <header class="admin-header">
-        <div class="logo-placeholder">
-          <img src="1 2.png" alt="Logo da Empresa" />
-        </div>
+    <div class="container">
+      <div class="header">
         <h1>Painel Administrativo</h1>
-      </header>
+        <div class="painel-button-container">
+          <button
+            class="painel-button"
+            id="gerenciarBtn"
+            onclick="toggleModoGerenciar()"
+          >
+            Gerenciar Usuários
+          </button>
+        </div>
+      </div>
 
-      <nav class="admin-nav">
-        <ul>
-          <li><a href="#users">Gerenciar Usuários</a></li>
-          <li><a href="#documents">Gerenciar Documentos</a></li>
-          <li><a href="#settings">Configurações</a></li>
-          <li><a href="#logs">Logs e Auditoria</a></li>
-        </ul>
-      </nav>
+      <input
+        type="text"
+        id="search"
+        placeholder="Pesquisar por nome..."
+        onkeyup="filtrarUsuarios()"
+        class="search-input"
+      />
 
-      <main class="admin-content">
-        <section id="documents">
-          <h2>Gerenciar Documentos</h2>
-          <div class="search-bar">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Pesquisar por nome..."
-            />
-          </div>
+      <table id="usuariosTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Documentos</th>
+            <th class="excluir-coluna">Excluir</th>
+          </tr>
+        </thead>
+        <tbody id="usuariosBody"></tbody>
+      </table>
+    </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Gênero</th>
-                <th>CPF</th>
-                <th>Endereço</th>
-                <th>Documentos</th>
-              </tr>
-            </thead>
-            <tbody id="userTableBody"></tbody>
-          </table>
-        </section>
-      </main>
+    <!-- Modal de lista de documentos -->
+    <div id="documentosModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharModal()">&times;</span>
+        <h3>Documentos de <span id="modalNome"></span></h3>
+        <div id="documentosContainer" class="documentos-grid"></div>
+      </div>
+    </div>
+
+    <!-- Modal de visualização de imagem -->
+    <div id="imagemModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharImagemModal()">&times;</span>
+        <img
+          id="imagemVisualizacao"
+          src=""
+          alt="Documento"
+          style="max-width: 100%; border-radius: 10px; margin-top: 10px"
+        />
+      </div>
     </div>
 
     <script>
       const token = localStorage.getItem("token");
+      let modoGerenciar = false;
 
-      if (!token) {
-        alert("Você precisa estar logado.");
-        window.location.href = "Pagina1_Login.html";
-      }
+      async function carregarUsuarios() {
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/auth/admin/usuarios",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-      const payload = JSON.parse(atob(token.split(".")[1]));
+          const usuarios = await response.json();
+          const tbody = document.getElementById("usuariosBody");
+          tbody.innerHTML = "";
 
-      if (!payload.isAdmin) {
-        alert("Acesso restrito a administradores.");
-        window.location.href = "Painelusuario.html";
-      }
+          usuarios.forEach((user) => {
+            const tr = document.createElement("tr");
+            if (modoGerenciar) tr.classList.add("exibir-exclusao");
 
-      document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://localhost:3000/api/auth/admin/usuarios", {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const tableBody = document.getElementById("userTableBody");
-            tableBody.innerHTML = "";
+            const excluirColuna = modoGerenciar
+              ? `<td class='excluir-coluna'><button class='delete-btn' onclick='confirmarExclusao(${user.id}, this)'>🗑️</button></td>`
+              : `<td class='excluir-coluna'></td>`;
 
-            data.forEach((user) => {
-              const arquivos = (user.arquivos || [])
-                .filter((doc) => doc.filename)
-                .map(
-                  (doc) => `
-                    <li>
-                      <a href="${doc.filepath
-                        .replace("backend", "")
-                        .replace(/\\/g, "/")}" target="_blank">
-                        ${doc.document_type}
-                      </a>
-                    </li>`
-                )
-                .join("");
-
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${user.id}</td>
-                <td>${user.firstname} ${user.lastname}</td>
-                <td>${user.gender || "-"}</td>
-                <td>${user.cpf || "-"}</td>
-                <td>${user.address || "-"}</td>
-                <td><ul>${arquivos || "Nenhum documento"}</ul></td>
-              `;
-
-              tableBody.appendChild(row);
-            });
-
-            // 🔍 Pesquisa
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-              const filter = searchInput.value.toLowerCase();
-              const rows = tableBody.getElementsByTagName("tr");
-              Array.from(rows).forEach((row) => {
-                const cells = row.getElementsByTagName("td");
-                const match = Array.from(cells).some((cell) =>
-                  cell.textContent.toLowerCase().includes(filter)
-                );
-                row.style.display = match ? "" : "none";
-              });
-            });
-          })
-          .catch((error) => {
-            console.error("Erro ao carregar usuários:", error);
-            alert("Erro ao carregar usuários.");
+            tr.innerHTML = `
+              <td>${user.id}</td>
+              <td>${user.firstname} ${user.lastname}</td>
+              <td>${user.cpf || "-"}</td>
+              <td><button onclick='abrirModalPorId(${user.id}, "${
+              user.firstname
+            } ${
+              user.lastname
+            }")' class="painel-button">📁 Ver Documentos</button></td>
+              ${excluirColuna}
+            `;
+            tbody.appendChild(tr);
           });
-      });
+
+          const table = document.getElementById("usuariosTable");
+          if (modoGerenciar) {
+            table.classList.add("exibir-exclusao");
+          } else {
+            table.classList.remove("exibir-exclusao");
+          }
+        } catch (err) {
+          console.error("Erro ao carregar usuários:", err);
+        }
+      }
+
+      function toggleModoGerenciar() {
+        modoGerenciar = !modoGerenciar;
+        const btn = document.getElementById("gerenciarBtn");
+        btn.textContent = modoGerenciar
+          ? "Cancelar Gerenciamento"
+          : "Gerenciar Usuários";
+        carregarUsuarios();
+      }
+
+      function confirmarExclusao(userId, btn) {
+        const linha = btn.closest("tr");
+        linha.classList.add("deletando");
+
+        if (confirm("Tem certeza que deseja excluir este usuário?")) {
+          excluirUsuario(userId);
+        } else {
+          linha.classList.remove("deletando");
+        }
+      }
+
+      async function excluirUsuario(userId) {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/auth/admin/usuarios/${userId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            alert("Usuário excluído com sucesso.");
+            carregarUsuarios();
+          } else {
+            alert("Erro ao excluir usuário.");
+          }
+        } catch (err) {
+          console.error("Erro ao excluir usuário:", err);
+          alert("Erro ao excluir usuário.");
+        }
+      }
+
+      async function abrirModalPorId(userId, nomeCompleto) {
+        document.getElementById("modalNome").textContent = nomeCompleto;
+        const container = document.getElementById("documentosContainer");
+        container.innerHTML = "Carregando documentos...";
+
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/auth/admin/usuarios/${userId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const user = await response.json();
+
+          container.innerHTML = "";
+
+          if (!user.arquivos || user.arquivos.length === 0) {
+            container.innerHTML = "<p>Nenhum documento encontrado.</p>";
+          } else {
+            user.arquivos.forEach((doc) => {
+              const docDiv = document.createElement("div");
+              docDiv.className = "documento-item";
+
+              const nome = document.createElement("p");
+              nome.textContent = doc.document_type;
+
+              const visualizarBtn = document.createElement("button");
+              visualizarBtn.innerText = "👁️ Visualizar";
+              visualizarBtn.className = "modal-button";
+              visualizarBtn.onclick = () =>
+                abrirImagemModal(
+                  "http://localhost:3000/" + doc.path.replace(/\\/g, "/")
+                );
+
+              const downloadBtn = document.createElement("a");
+              downloadBtn.innerText = "⬇️ Download";
+              downloadBtn.href = `http://localhost:3000/api/auth/download/${encodeURIComponent(
+                doc.filename
+              )}`;
+              downloadBtn.download = doc.filename;
+              downloadBtn.className = "modal-button";
+
+              docDiv.appendChild(nome);
+              docDiv.appendChild(visualizarBtn);
+              docDiv.appendChild(downloadBtn);
+              container.appendChild(docDiv);
+            });
+          }
+
+          document.getElementById("documentosModal").style.display = "block";
+        } catch (error) {
+          container.innerHTML = "<p>Erro ao carregar documentos.</p>";
+        }
+      }
+
+      function abrirImagemModal(src) {
+        const imagem = document.getElementById("imagemVisualizacao");
+        imagem.src = src;
+        document.getElementById("imagemModal").style.display = "block";
+      }
+
+      function fecharModal() {
+        document.getElementById("documentosModal").style.display = "none";
+      }
+
+      function fecharImagemModal() {
+        document.getElementById("imagemModal").style.display = "none";
+        document.getElementById("imagemVisualizacao").src = "";
+      }
+
+      function filtrarUsuarios() {
+        const termo = document.getElementById("search").value.toLowerCase();
+        const linhas = document
+          .getElementById("usuariosBody")
+          .getElementsByTagName("tr");
+
+        Array.from(linhas).forEach((linha) => {
+          const nome = linha.cells[1].textContent.toLowerCase();
+          linha.style.display = nome.includes(termo) ? "" : "none";
+        });
+      }
+
+      carregarUsuarios();
     </script>
   </body>
 </html>

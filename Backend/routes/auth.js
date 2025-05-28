@@ -150,21 +150,42 @@ router.post("/upload-multiple", uploadMulti.any(), async (req, res) => {
     return res.status(400).json({ error: "Nenhum arquivo enviado." });
 
   try {
-    const queries = files.map((file) =>
-      pool.query(
+    for (const file of files) {
+      const documentType = file.fieldname;
+
+      // Verifica se o documento já existe
+      const existing = await pool.query(
+        "SELECT * FROM user_files WHERE user_id = $1 AND document_type = $2",
+        [userId, documentType]
+      );
+
+      if (existing.rows.length > 0) {
+        const oldFile = existing.rows[0];
+        const oldFilePath = path.join(__dirname, "..", oldFile.filepath);
+
+        // Remove arquivo do disco
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
+
+        // Remove do banco
+        await pool.query("DELETE FROM user_files WHERE id = $1", [oldFile.id]);
+      }
+
+      // Salva o novo documento
+      await pool.query(
         `INSERT INTO user_files (user_id, document_type, filename, filepath, mimetype)
          VALUES ($1, $2, $3, $4, $5)`,
         [
           userId,
-          file.fieldname,
+          documentType,
           file.originalname,
-          `uploads/${file.filename}`, // ✅ Salvar caminho relativo
+          `uploads/${file.filename}`,
           file.mimetype,
         ]
-      )
-    );
+      );
+    }
 
-    await Promise.all(queries);
     res.status(201).json({ message: "Arquivos enviados com sucesso!" });
   } catch (err) {
     console.error("Erro ao salvar arquivos:", err);

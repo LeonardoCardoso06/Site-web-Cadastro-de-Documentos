@@ -112,6 +112,15 @@ h1 {
 input[type="file"] {
   display: none;
 }
+.aviso-substituicao {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
 
 .file-upload-label {
   display: inline-block;

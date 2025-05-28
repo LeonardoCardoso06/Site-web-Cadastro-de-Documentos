@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="../CSS/PaginaAdmin.css" />
+    <style></style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Painel Administrativo</h1>
+        <div class="painel-button-container">
+          <button class="painel-button" onclick="carregarUsuarios()">
+            🔄 Recarregar Lista
+          </button>
+          <button class="painel-button" onclick="toggleModoGerenciar()">
+            👥 Gerenciar Usuários
+          </button>
+        </div>
+      </div>
+
+      <input
+        type="text"
+        id="search"
+        placeholder="Pesquisar por nome..."
+        class="search-input"
+        onkeyup="filtrarUsuarios()"
+      />
+
+      <table id="usuariosTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Ações</th>
+            <th class="delete-column">Excluir</th>
+          </tr>
+        </thead>
+        <tbody id="usuariosBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Modal Informações -->
+    <div id="infoModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharModal('infoModal')">&times;</span>
+        <h3>Informações de <span id="infoNome"></span></h3>
+        <div id="infoContainer" class="info-grid"></div>
+      </div>
+    </div>
+
+    <!-- Modal Documentos -->
+    <!-- Modal Visualização Individual -->
+    <div id="visualizarModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharModal('visualizarModal')"
+          >&times;</span
+        >
+        <h3 id="visualizarTitulo"></h3>
+        <div id="visualizarConteudo" style="text-align: center"></div>
+      </div>
+    </div>
+
+    <div id="documentosModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharModal('documentosModal')"
+          >&times;</span
+        >
+        <h3>Documentos de <span id="modalNome"></span></h3>
+        <div id="documentosContainer"></div>
+      </div>
+    </div>
+
+    <script src="../JS/PaginaAdmin.js"></script>
+  </body>
+</html>

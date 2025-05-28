@@ -1,33 +1,6 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="Pagina1_Login.css" />
-    <title>Login</title>
-  </head>
-  <body>
-    <div class="login-container">
-      <div class="logo">
-        <img src="LogoPequeno.png" alt="Logo" />
-      </div>
-      <h1>Login</h1>
-      <form id="loginForm">
-  <input type="email" id="email" required placeholder="Email" />
-  <input type="password" id="password" required placeholder="Senha" />
-  <button type="submit">Entrar</button>
-</form>
-
-      </form>
-      <div class="forgot-password" onclick="forgotPassword()">
-        Esqueceu a senha?
-      </div>
-      <a class="submit" href="Pagina2_Cadastro.html">Cadastre-se</a>
-    </div>
-
-<script>
-  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -62,14 +35,12 @@
           window.location.href = "Pagina4_Arquivos.html"; // ou "Painelusuario.html"
         }
       } else {
-        alert("Erro: " + (result.error || result.details || "Resposta inválida do servidor."));
+        alert(
+          "Erro: " +
+            (result.error || result.details || "Resposta inválida do servidor.")
+        );
       }
     } catch (err) {
       alert("Erro ao fazer login: " + err.message);
     }
   });
-</script>
-
-
-  </body>
-</html>

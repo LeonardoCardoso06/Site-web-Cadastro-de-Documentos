@@ -1,9 +1,10 @@
+const token = localStorage.getItem("token");
+
 document
   .getElementById("documentForm")
   .addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
     if (!token) {
       alert("Você precisa estar logado.");
       return (window.location.href = "Pagina1_Login.html");
@@ -38,6 +39,9 @@ document
         "http://localhost:3000/api/auth/upload-multiple",
         {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Adicionado corretamente
+          },
           body: formData,
         }
       );
@@ -59,19 +63,20 @@ document
       }
     } catch (err) {
       alert("Erro ao enviar arquivos: " + err.message);
+      console.error(err);
     }
   });
 
+// Atualiza nome dos arquivos ao selecionar
 function atualizarNomeArquivo(inputId, labelId) {
   const input = document.getElementById(inputId);
   const label = document.getElementById(labelId);
 
   input.addEventListener("change", function () {
-    if (input.files.length > 0) {
-      label.textContent = input.files[0].name;
-    } else {
-      label.textContent = "Nenhum arquivo selecionado";
-    }
+    label.textContent =
+      input.files.length > 0
+        ? input.files[0].name
+        : "Nenhum arquivo selecionado";
   });
 }
 
@@ -84,25 +89,27 @@ atualizarNomeArquivo("historicoEscolar", "historicoEscolarName");
 atualizarNomeArquivo("pis", "pisName");
 atualizarNomeArquivo("carteirinha", "carteirinhaName");
 
+// Carrega documentos já existentes
 async function carregarDocumentosExistentes() {
-  const userId = localStorage.getItem("userId"); // ou como você o recupera
+  const userId = localStorage.getItem("userId");
 
-  const response = await fetch(
-    `http://localhost:3000/api/auth/admin/usuarios/${userId}`,
-    {
+  try {
+    const response = await fetch("http://localhost:3000/api/auth/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    });
+
+    const dados = await response.json();
+
+    if (dados.arquivos && dados.arquivos.length > 0) {
+      const tipos = dados.arquivos.map((a) => a.document_type).join(", ");
+      document.getElementById(
+        "documentos-existentes"
+      ).innerText = `Documentos já enviados: ${tipos}`;
     }
-  );
-
-  const dados = await response.json();
-
-  if (dados.arquivos && dados.arquivos.length > 0) {
-    const tipos = dados.arquivos.map((a) => a.document_type).join(", ");
-    document.getElementById(
-      "documentos-existentes"
-    ).innerText = `Documentos já enviados: ${tipos}`;
+  } catch (err) {
+    console.error("Erro ao carregar documentos existentes:", err);
   }
 }
 

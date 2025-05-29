@@ -10,17 +10,35 @@ const { verificarToken } = require("../middlewares/authMiddlewares");
 require("dotenv").config();
 
 // === Upload de imagem de perfil ===
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, path.join(__dirname, "../uploads"));
+    },
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const nome = path.basename(file.originalname, ext).replace(/\s+/g, "_");
+      const unique = Date.now() + "-" + Math.round(Math.random() * 1e6);
+      cb(null, `${unique}-${nome}${ext}`);
+    },
+  }),
+});
 
+// === Cadastro com imagem de perfil ===
 router.post("/register", upload.single("picture__input"), async (req, res) => {
   try {
+    console.log("📦 Requisição recebida no /register");
+    console.log("📤 req.body:", req.body);
+    console.log("🖼️ req.file:", req.file);
     const { firstname, lastname, email, password, phone, gender } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const picturePath = req.file ? `uploads/${req.file.filename}` : null;
+
     const result = await pool.query(
-      `INSERT INTO users (firstname, lastname, email, password, phone, gender)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      [firstname, lastname, email, hashedPassword, phone, gender]
+      `INSERT INTO users (firstname, lastname, email, password, phone, gender, picture_path)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [firstname, lastname, email, hashedPassword, phone, gender, picturePath]
     );
 
     res.status(201).json({
@@ -34,7 +52,6 @@ router.post("/register", upload.single("picture__input"), async (req, res) => {
       .json({ error: "Erro ao registrar usuário", details: err.message });
   }
 });
-
 // === Login com JWT ===
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;

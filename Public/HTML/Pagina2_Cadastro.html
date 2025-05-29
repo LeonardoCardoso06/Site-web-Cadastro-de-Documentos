@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../CSS/Pagina2_Cadastro.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
+    />
     <title>Cadastro</title>
   </head>
   <body>
@@ -18,10 +22,13 @@
           <div class="input-group">
             <label for="firstname">Nome</label>
             <input id="firstname" type="text" name="firstname" required />
+
             <label for="lastname">Sobrenome</label>
             <input id="lastname" type="text" name="lastname" required />
+
             <label for="email">E-mail</label>
             <input id="email" type="email" name="email" required />
+
             <label for="password">Senha</label>
             <input
               id="password"
@@ -30,8 +37,12 @@
               minlength="8"
               required
             />
+
             <label for="phone">Telefone</label>
-            <input id="phone" type="tel" name="phone" required />
+            <input id="phone" type="tel" name="phone" maxlength="15" required />
+
+            <label for="cpf">CPF</label>
+            <input id="cpf" type="text" name="cpf" maxlength="14" required />
           </div>
 
           <div class="gender-group">
@@ -45,18 +56,16 @@
             </div>
           </div>
 
-          <div
-            class="picture"
-            onclick="document.getElementById('picture__input').click()"
-          >
-            <img id="picturePreview" alt="Prévia da Foto" />
-            <label class="picture-label">Adicionar Foto</label>
+          <div class="picture" onclick="abrirModalImagem()">
+            <img id="picturePreview" src="" alt="Prévia da Foto" />
+            <label class="picture-label">Selecionar Foto</label>
             <input
               type="file"
               id="picture__input"
               name="picture__input"
               accept="image/*"
-              onchange="previewImage(event)"
+              onchange="carregarImagem(event)"
+              style="display: none"
             />
           </div>
 
@@ -66,6 +75,26 @@
         </form>
       </div>
     </div>
-    <script src="../JS/Pagina2_Cadastro.js"></script>
+
+    <!-- Modal de Cropper -->
+    <div id="modalCropper" class="modal-cropper">
+      <div class="modal-content-cropper">
+        <span class="close" onclick="fecharModalImagem()">&times;</span>
+        <h3>Editar Imagem</h3>
+        <div class="cropper-container">
+          <img id="imagemCrop" src="" />
+        </div>
+        <button class="crop-btn" onclick="confirmarCorte()">
+          Recortar e Salvar
+        </button>
+        
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script 
+    for (const pair of formData.entries()) {
+  console.log("🟡 FormData:", pair[0], pair[1]);
+  src="../JS/Pagina2_Cadastro.js"></script>
   </body>
 </html>

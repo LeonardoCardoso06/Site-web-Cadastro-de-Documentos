@@ -22,6 +22,58 @@ body {
   }
 }
 
+.picture {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: auto;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #ccc;
+  transition: 0.3s;
+}
+.picture:hover {
+  border-color: #007bff;
+}
+.picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-cropper {
+  display: none;
+  position: fixed;
+  z-index: 99;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+.modal-content-cropper {
+  background: white;
+  padding: 20px;
+  margin: 10vh auto;
+  max-width: 400px;
+  text-align: center;
+  border-radius: 10px;
+}
+.cropper-container img {
+  max-width: 100%;
+  max-height: 400px;
+}
+.crop-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 .container {
   background-color: rgba(255, 255, 255, 0.95);
   padding: 40px 50px;
@@ -156,7 +208,6 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: none;
   border-radius: 15px;
 }
 
@@ -183,4 +234,147 @@ input[type="file"] {
 .button button:hover {
   background-color: #005bb5;
   transform: translateY(-2px);
+}
+
+.picture {
+  width: 200px;
+  margin: 0 auto 25px auto;
+  text-align: center;
+  cursor: pointer;
+}
+
+.picture-preview {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #00aeff;
+  margin: 0 auto;
+  transition: 0.3s;
+}
+
+.picture-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.picture-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: 0.3s;
+  font-size: 0.9rem;
+}
+
+.picture-preview:hover .picture-overlay {
+  opacity: 1;
+}
+
+.picture {
+  width: 200px;
+  margin: 0 auto 25px auto;
+  text-align: center;
+  cursor: pointer;
+}
+
+.picture-preview {
+  width: 180px;
+  height: 180px;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #00aeff;
+  margin: 0 auto;
+  transition: 0.3s;
+}
+
+.picture-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.picture-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  font-size: 1.1rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.picture-preview:hover .picture-overlay {
+  opacity: 1;
+}
+
+.picture {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  max-width: 80vw;
+  margin: auto;
+  cursor: pointer;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 3px solid #ccc;
+  transition: 0.3s;
+}
+.picture:hover {
+  border-color: #007bff;
+}
+.picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-cropper {
+  display: none;
+  position: fixed;
+  z-index: 99;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+.modal-content-cropper {
+  background: white;
+  padding: 20px;
+  margin: 10vh auto;
+  max-width: 400px;
+  text-align: center;
+  border-radius: 10px;
+}
+.cropper-container img {
+  max-width: 100%;
+  max-height: 400px;
+}
+.crop-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  cursor: pointer;
+  border-radius: 5px;
 }

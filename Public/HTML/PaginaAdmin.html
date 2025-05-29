@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Painel Administrativo</title>
     <link rel="stylesheet" href="../CSS/PaginaAdmin.css" />
-    <style></style>
   </head>
+
   <body>
     <div class="container">
       <div class="header">
@@ -32,7 +32,7 @@
       <table id="usuariosTable">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Foto</th>
             <th>Nome</th>
             <th>CPF</th>
             <th>Ações</th>
@@ -72,6 +72,12 @@
         <h3>Documentos de <span id="modalNome"></span></h3>
         <div id="documentosContainer"></div>
       </div>
+    </div>
+
+    <!-- Modal de visualização da foto -->
+    <div id="fotoModal">
+      <span class="close" onclick="fecharModal('fotoModal')">&times;</span>
+      <img id="fotoModalImagem" src="" alt="Visualizar Foto" />
     </div>
 
     <script src="../JS/PaginaAdmin.js"></script>

@@ -1,3 +1,4 @@
+// admin.js (corrigido)
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
@@ -10,7 +11,7 @@ const {
 router.get("/usuarios", verificarToken, verificarAdmin, async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT u.id, u.firstname, u.lastname, d.cpf
+      SELECT u.id, u.firstname, u.lastname, u.picture_path, d.cpf
       FROM users u
       LEFT JOIN user_details d ON u.id = d.user_id
       ORDER BY u.id
@@ -33,17 +34,17 @@ router.get(
 
     try {
       const result = await pool.query(
-        `SELECT u.id, u.firstname, u.lastname, u.email, u.phone, u.gender,
-              d.birthdate, d.cpf, d.address, d.numero_trem, d.numero_onibus,
-              d.vale_transporte, d.possui_deficiencia, d.observacoes,
-              json_agg(
-                json_build_object(
-                  'document_type', f.document_type,
-                  'filename', f.filename,
-                  'path', f.filepath,
-                  'mimetype', f.mimetype
-                )
-              ) AS arquivos
+        `SELECT u.id, u.firstname, u.lastname, u.email, u.phone, u.gender, u.picture_path,
+                d.birthdate, d.cpf, d.address, d.numero_trem, d.numero_onibus,
+                d.vale_transporte, d.possui_deficiencia, d.observacoes,
+                json_agg(
+                  json_build_object(
+                    'document_type', f.document_type,
+                    'filename', f.filename,
+                    'path', f.filepath,
+                    'mimetype', f.mimetype
+                  )
+                ) AS arquivos
          FROM users u
          LEFT JOIN user_details d ON u.id = d.user_id
          LEFT JOIN user_files f ON u.id = f.user_id

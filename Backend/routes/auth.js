@@ -13,7 +13,7 @@ require("dotenv").config();
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, path.join(__dirname, "../uploads"));
+      cb(null, path.join(__dirname, "../uploads/fotos"));
     },
     filename: (req, file, cb) => {
       const ext = path.extname(file.originalname);
@@ -33,7 +33,7 @@ router.post("/register", upload.single("picture__input"), async (req, res) => {
     const { firstname, lastname, email, password, phone, gender } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const picturePath = req.file ? `uploads/${req.file.filename}` : null;
+    const picturePath = req.file ? `uploads/fotos/${req.file.filename}` : null;
 
     const result = await pool.query(
       `INSERT INTO users (firstname, lastname, email, password, phone, gender, picture_path)
@@ -218,7 +218,7 @@ router.get("/me", verificarToken, async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT u.id, u.firstname, u.lastname, u.email, u.phone, u.gender,
+      `SELECT u.id, u.firstname, u.lastname, u.email, u.phone, u.gender, u.picture_path,
               d.birthdate, d.cpf, d.address, d.numero_trem, d.numero_onibus, d.vale_transporte, d.possui_deficiencia, d.observacoes,
               json_agg(json_build_object('document_type', f.document_type, 'filename', f.filename, 'path', f.filepath)) AS arquivos
          FROM users u
@@ -228,9 +228,20 @@ router.get("/me", verificarToken, async (req, res) => {
          GROUP BY u.id, d.id`,
       [userId]
     );
-
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    const user = result.rows[0];
+
+    // Acrescentar URL completa da imagem
+    if (user.picture_path) {
+      user.picture_url = `http://localhost:3000/${user.picture_path.replace(
+        /\\/g,
+        "/"
+      )}`;
+    } else {
+      user.picture_url = null;
     }
 
     res.status(200).json(result.rows[0]);

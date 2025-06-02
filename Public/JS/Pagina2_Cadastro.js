@@ -12,7 +12,7 @@ function carregarImagem(event) {
   // ✅ Mostrar preview direto no avatar
   const preview = document.getElementById("picturePreview");
   const url = URL.createObjectURL(file);
-  preview.src = url;
+  preview.style.display = "block";
 
   imagemOriginal = url;
   document.getElementById("imagemCrop").src = imagemOriginal;

@@ -6,30 +6,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f3f3f3;
+        font-family: "Segoe UI", sans-serif;
         margin: 0;
-        padding: 20px;
+        padding: 0;
+        background: linear-gradient(135deg, #d0f1ff, #f5faff);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 30px 10px;
       }
 
       .painel {
         background: white;
-        max-width: 800px;
-        margin: auto;
+        width: 100%;
+        max-width: 900px;
         padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease;
       }
 
-      h1 {
-        margin-top: 0;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1,
+      h2 {
+        color: #007acc;
         text-align: center;
+        margin-bottom: 20px;
       }
 
-      .user-info,
-      .docs,
-      .upload {
-        margin-top: 20px;
+      .user-info p,
+      .docs li {
+        margin: 8px 0;
+        padding: 8px 12px;
+        background: #f2faff;
+        border-left: 4px solid #007acc;
+        border-radius: 8px;
+      }
+
+      .user-info strong {
+        display: inline-block;
+        min-width: 130px;
       }
 
       ul {
@@ -39,64 +66,92 @@
 
       li {
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        background: #f9f9f9;
+        margin-bottom: 8px;
+        border-radius: 8px;
       }
 
       li a {
         text-decoration: none;
         color: #007bff;
+        font-weight: 500;
       }
 
       li a:hover {
         text-decoration: underline;
       }
 
-      .logout {
-        margin-top: 30px;
-        text-align: center;
-      }
-
-      .logout button {
-        background-color: #d9534f;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-
-      .logout button:hover {
-        background-color: #c9302c;
-      }
-
       .upload {
-        background: #f9f9f9;
-        padding: 15px;
-        border-radius: 10px;
+        margin-top: 30px;
+        background: #eef9ff;
+        padding: 20px;
+        border-radius: 15px;
+        animation: fadeIn 1.5s ease;
       }
 
       .upload form {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
+      }
+
+      select,
+      input[type="file"] {
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(45deg, #00aeff, #0073e6);
+        color: white;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+      }
+
+      button:hover {
+        background: linear-gradient(45deg, #0073e6, #005bb5);
+        transform: scale(1.03);
+      }
+
+      .logout {
+        text-align: center;
+        margin-top: 30px;
       }
 
       .delete-btn {
-        background: none;
-        border: none;
-        color: red;
+        background: transparent;
+        color: #e74c3c;
+        font-weight: bold;
         cursor: pointer;
+        border: none;
+        font-size: 0.95rem;
+      }
+
+      .delete-btn:hover {
+        text-decoration: underline;
+      }
+
+      .divider {
+        margin: 30px 0;
+        border-top: 1px dashed #ccc;
       }
     </style>
   </head>
   <body>
     <div class="painel">
       <h1>Bem-vindo, <span id="nomeUsuario">Usuário</span></h1>
-
       <div class="user-info">
-        <h2>Seus dados:</h2>
+        <h2>Seus dados</h2>
         <p><strong>Email:</strong> <span id="email"></span></p>
         <p><strong>Telefone:</strong> <span id="phone"></span></p>
         <p><strong>Gênero:</strong> <span id="gender"></span></p>
@@ -107,29 +162,13 @@
         <p><strong>Observações:</strong> <span id="obs"></span></p>
       </div>
 
+      <div class="divider"></div>
+
       <div class="docs">
-        <h2>Seus Documentos:</h2>
+        <h2>Seus Documentos</h2>
         <ul id="listaDocs">
           <li>Carregando documentos...</li>
         </ul>
-      </div>
-
-      <div class="upload">
-        <h2>Enviar novo documento:</h2>
-        <form id="uploadForm">
-          <label for="documento">Selecione o arquivo:</label>
-          <input type="file" name="file" id="documento" required />
-          <select name="document_type" required>
-            <option value="">Tipo do documento</option>
-            <option value="rg">RG</option>
-            <option value="cpf">CPF</option>
-            <option value="comprovanteResidencia">
-              Comprovante de Residência
-            </option>
-            <option value="outro">Outro</option>
-          </select>
-          <button type="submit">Enviar</button>
-        </form>
       </div>
 
       <div class="logout">
@@ -139,7 +178,6 @@
 
     <script>
       const token = localStorage.getItem("token");
-
       if (!token) {
         alert("Você precisa estar logado para acessar esta página.");
         window.location.href = "Pagina1_Login.html";
@@ -150,11 +188,26 @@
         window.location.href = "Pagina1_Login.html";
       }
 
+      function formatarTipoDocumento(tipo) {
+        const nomesFormatados = {
+          rgCnh: "RG / CNH",
+          comprovanteResidencia: "Comprovante de Residência",
+          tituloEleitor: "Título de Eleitor",
+          certidaoMilitar: "Certidão Militar",
+          exameMedico: "Exame Médico",
+          historicoEscolar: "Histórico Escolar",
+          pis: "PIS",
+          carteirinha: "Carteirinha",
+          cpf: "CPF",
+          rg: "RG",
+          outro: "Outro",
+        };
+        return nomesFormatados[tipo] || tipo;
+      }
+
       function carregarUsuario() {
         fetch("http://localhost:3000/api/auth/me", {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
+          headers: { Authorization: "Bearer " + token },
         })
           .then((res) => {
             if (!res.ok) throw new Error("Não autorizado");
@@ -182,20 +235,29 @@
 
             if (user.arquivos && user.arquivos.length > 0) {
               user.arquivos.forEach((doc) => {
-                if (doc.filename) {
-                  const item = document.createElement("li");
-                  item.innerHTML = `
-                  <span><a href="${doc.path
-                    .replace("backend", "")
-                    .replace(/\\/g, "/")}" target="_blank">${
+                const url = `http://localhost:3000/${doc.path.replace(
+                  /\\/g,
+                  "/"
+                )}`;
+                const item = document.createElement("li");
+
+                item.innerHTML = `
+                  <span>
+                    <a href="${url}" target="_blank">${formatarTipoDocumento(
+                  doc.document_type
+                )}</a>
+                  </span>
+                  <input type="file" id="upload-${
                     doc.document_type
-                  }</a></span>
-                  <button class="delete-btn" onclick="excluirArquivo(${
-                    doc.id
-                  })">Excluir</button>
+                  }" style="display:none" accept=".pdf,.jpg,.jpeg,.png"
+                    onchange="substituirDocumento('${
+                      doc.document_type
+                    }', this.files[0])" />
+                  <button class="delete-btn" onclick="document.getElementById('upload-${
+                    doc.document_type
+                  }').click()">Substituir</button>
                 `;
-                  lista.appendChild(item);
-                }
+                lista.appendChild(item);
               });
             } else {
               lista.innerHTML = "<li>Nenhum documento enviado.</li>";
@@ -207,64 +269,34 @@
           });
       }
 
-      carregarUsuario();
+      function substituirDocumento(tipo, file) {
+        if (!file) return;
 
-      // Envio de novo arquivo
-      document
-        .getElementById("uploadForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
+        const userId = JSON.parse(atob(token.split(".")[1])).userId;
+        const formData = new FormData();
+        formData.append("userId", userId);
+        formData.append(tipo, file);
 
-          const userId = JSON.parse(atob(token.split(".")[1])).userId;
-
-          const formData = new FormData();
-          formData.append("userId", userId);
-          formData.append(
-            "file",
-            document.getElementById("documento").files[0]
-          );
-          formData.append("document_type", this.document_type.value);
-
-          try {
-            const response = await fetch(
-              "http://localhost:3000/api/auth/upload-multiple",
-              {
-                method: "POST",
-                body: formData,
-              }
-            );
-
-            const result = await response.json();
-
-            if (response.ok) {
-              alert("Documento enviado com sucesso!");
-              carregarUsuario(); // Atualiza lista
-            } else {
-              alert("Erro: " + (result.error || result.details));
-            }
-          } catch (err) {
-            alert("Erro ao enviar: " + err.message);
-          }
-        });
-
-      function excluirArquivo(id) {
-        if (!confirm("Tem certeza que deseja excluir este documento?")) return;
-
-        fetch(`http://localhost:3000/api/auth/files/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
+        fetch("http://localhost:3000/api/auth/upload-multiple", {
+          method: "POST",
+          headers: { Authorization: "Bearer " + token },
+          body: formData,
         })
           .then((res) => res.json())
           .then((result) => {
-            alert(result.message || "Documento excluído");
-            carregarUsuario();
+            if (result.message) {
+              alert("Documento substituído com sucesso!");
+              carregarUsuario();
+            } else {
+              alert("Erro ao substituir: " + (result.error || result.details));
+            }
           })
           .catch((err) => {
-            alert("Erro ao excluir documento: " + err.message);
+            alert("Erro ao enviar: " + err.message);
           });
       }
+
+      carregarUsuario();
     </script>
   </body>
 </html>

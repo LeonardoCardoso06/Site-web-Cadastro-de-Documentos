@@ -164,3 +164,17 @@ body {
   margin-top: 30px;
   text-align: center;
 }
+
+.input-group select,
+.input-box select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 1px 1px 6px #a1a0a01c;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  background-color: white;
+  appearance: none; /* remove aparência padrão em alguns navegadores */
+}

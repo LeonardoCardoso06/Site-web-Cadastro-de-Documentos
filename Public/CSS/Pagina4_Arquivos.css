@@ -191,26 +191,25 @@ label {
   width: 200px;
   top: 100px;
 }
-.painel-button-container {
-  text-align: center;
-  margin-top: 30px;
-  margin-left: 10;
-}
-
 .painel-button {
-  padding: 12px 30px;
-  background: linear-gradient(45deg, #007bff, #0056b3);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.painel-button:hover {
-  background: linear-gradient(45deg, #0056b3, #003f88);
-  transform: scale(1.05);
+.painel-button button {
+  padding: 10px 20px;
+  border: none;
+  background: linear-gradient(rgb(7, 193, 255), rgb(10, 110, 192));
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, background-color 0.3s;
+}
+.painel-button button:hover {
+  background: linear-gradient(rgb(7, 193, 255), rgb(4, 78, 139));
+  transform: translateY(-5px);
 }

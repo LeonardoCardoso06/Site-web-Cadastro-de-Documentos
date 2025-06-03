@@ -9,9 +9,6 @@
   </head>
   <body>
     <div class="container">
-      <div class="form-image">
-        <img src="../Imagens/ 2.png" alt="Form Image" />
-      </div>
       <div class="form">
         <form id="registrationForm">
           <div class="form-header"><div class="title"></div></div>
@@ -86,27 +83,28 @@
                 </select>
               </div>
               <div id="vtDetails" class="input-box hidden">
-                <label for="busQuantity">Quantidade Passagens</label>
+                <label for="busQuantity">Quantidade Passagens ida/volta</label>
                 <input
                   id="busQuantity"
                   type="number"
                   name="busQuantity"
                   placeholder="Quantidade de ônibus"
                 />
-                <label for="busName">Nome/número do ônibus</label>
+                <label for="busName">Operadora(s)</label>
                 <input
                   id="busName"
                   type="text"
                   name="busName"
                   placeholder="Nome e número dos ônibus"
                 />
-                <label for="trainMetro">Número de Trem/Metrô</label>
-                <input
-                  id="trainMetro"
-                  type="number"
-                  name="trainMetro"
-                  placeholder="Detalhes do trem ou metrô"
-                />
+                <label for="trainMetro"
+                  >Integração? Ônibus / Trem / Metrô</label
+                >
+                <select id="trainMetro" name="trainMetro" required>
+                  <option value="">Selecione</option>
+                  <option value="sim">Sim</option>
+                  <option value="nao">Não</option>
+                </select>
               </div>
             </div>
 
@@ -138,6 +136,7 @@
         </form>
       </div>
     </div>
+
     <script src="../JS/Pagina3_InfoAdicionais.js"></script>
   </body>
 </html>

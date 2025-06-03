@@ -1,3 +1,32 @@
+function formatarCPF(input) {
+  let valor = input.value.replace(/\D/g, "");
+  if (valor.length > 11) valor = valor.slice(0, 11);
+  valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+  valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+  valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  input.value = valor;
+}
+
+function formatarCEP(input) {
+  let valor = input.value.replace(/\D/g, "").slice(0, 8);
+  valor = valor.replace(/^(\d{5})(\d{1,3})/, "$1-$2");
+  input.value = valor;
+}
+
+function formatarTelefone(input) {
+  let valor = input.value.replace(/\D/g, "");
+  if (valor.length > 11) valor = valor.slice(0, 11);
+  if (valor.length > 10) {
+    input.value = valor.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  } else if (valor.length > 6) {
+    input.value = valor.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+  } else if (valor.length > 2) {
+    input.value = valor.replace(/(\d{2})(\d{0,5})/, "($1) $2");
+  } else {
+    input.value = valor;
+  }
+}
+
 document
   .getElementById("registrationForm")
   .addEventListener("submit", async function (e) {
@@ -56,3 +85,13 @@ document.getElementById("disability").addEventListener("change", function () {
     .getElementById("disabilityDetails")
     .classList.toggle("hidden", this.value !== "sim");
 });
+
+document
+  .getElementById("cpf")
+  .addEventListener("input", (e) => formatarCPF(e.target));
+document
+  .getElementById("cep")
+  .addEventListener("input", (e) => formatarCEP(e.target));
+document
+  .getElementById("emergencyNumber")
+  .addEventListener("input", (e) => formatarTelefone(e.target));

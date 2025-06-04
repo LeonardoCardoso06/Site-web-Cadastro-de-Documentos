@@ -11,8 +11,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
+  min-height: 100vh;
   animation: gradientAnimation 15s ease infinite;
   background-size: 200% 200%;
 }
@@ -39,7 +38,6 @@ body {
   width: 90%;
   max-width: 1200px;
   overflow: hidden;
-  position: relative;
 }
 
 @keyframes fadeIn {
@@ -52,46 +50,39 @@ body {
 }
 
 .header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin-bottom: 20px;
-  position: relative;
+  margin-bottom: 30px;
 }
 
 .logo-placeholder {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 100px; /* Ajuste o tamanho conforme necessário */
-  height: auto;
-  z-index: 2;
+  justify-self: start;
+  width: 100px;
 }
 
 .logo-placeholder img {
   width: 100%;
   height: auto;
   object-fit: contain;
-  margin-top: 60px;
 }
 
 h1 {
-  font-size: 3rem;
+  grid-column: 2;
+  text-align: center;
+  font-size: 2.4rem;
   color: #0578adf5;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.274);
   font-weight: bold;
-  position: relative;
-  text-align: center;
-  margin-top: 250px;
-  z-index: 1;
-  top: -20px;
+  margin: 0;
 }
 
+/* FORMULÁRIO */
 .list {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .form-group {
@@ -112,14 +103,12 @@ h1 {
 input[type="file"] {
   display: none;
 }
-.aviso-substituicao {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeeba;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+
+label {
+  display: block;
+  margin-bottom: 5px;
   font-weight: bold;
+  color: #333;
 }
 
 .file-upload-label {
@@ -150,13 +139,7 @@ input[type="file"] {
   color: #555;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-}
-
+/* BOTÃO SALVAR */
 .save-button {
   display: flex;
   justify-content: center;
@@ -181,16 +164,7 @@ label {
   transform: translateY(-5px);
 }
 
-@media (max-width: 768px) {
-  .form-group {
-    flex: 1 1 100%;
-  }
-}
-
-.logo-placeholder {
-  width: 200px;
-  top: 100px;
-}
+/* BOTÃO PAINEL */
 .painel-button {
   display: flex;
   justify-content: center;
@@ -209,7 +183,22 @@ label {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s, background-color 0.3s;
 }
+
 .painel-button button:hover {
   background: linear-gradient(rgb(7, 193, 255), rgb(4, 78, 139));
   transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .form-group {
+    flex: 1 1 100%;
+  }
+
+  .header {
+    gap: 15px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
 }

@@ -63,9 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
       input.value = valor;
     }
   }
+
   document
     .getElementById("phone")
     .addEventListener("input", (e) => formatarTelefone(e.target));
+
   document
     .getElementById("registrationForm")
     .addEventListener("submit", async function (e) {
@@ -88,8 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         );
 
-        const result = await response.json();
-        console.log("Resultado do cadastro:", result);
+        let result;
+        try {
+          result = await response.json();
+          console.log("Resultado do cadastro:", result);
+        } catch (err) {
+          const fallbackText = await response.text();
+          console.error("Erro ao processar JSON:", fallbackText);
+          alert("Erro inesperado no servidor:\n" + fallbackText);
+          return;
+        }
 
         if (response.ok) {
           const email = formData.get("email");
@@ -118,14 +128,16 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Login falhou: " + (loginResult.error || "sem resposta"));
           }
         } else {
-          alert("Erro ao cadastrar: " + (result.error || result.details));
+          alert(
+            "Erro ao cadastrar: " +
+              (result.error || result.details || "Erro desconhecido")
+          );
         }
       } catch (err) {
         alert("Erro no envio: " + err.message);
       }
     });
 
-  // Torna funções globais acessíveis no HTML
   window.abrirModalImagem = abrirModalImagem;
   window.carregarImagem = carregarImagem;
   window.fecharModalImagem = fecharModalImagem;

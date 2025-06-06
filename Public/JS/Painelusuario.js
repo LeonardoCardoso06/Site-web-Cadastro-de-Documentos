@@ -11,7 +11,8 @@ function logout() {
 
 function formatarTipoDocumento(tipo) {
   const nomesFormatados = {
-    rgCnh: "RG / CNH",
+    rgCnhFrente: "CPF/CNH - Frente",
+    rgCnhVerso: "CPF/CNH - Verso",
     comprovanteResidencia: "Comprovante de Residência",
     tituloEleitor: "Título de Eleitor",
     certidaoMilitar: "Certidão Militar",

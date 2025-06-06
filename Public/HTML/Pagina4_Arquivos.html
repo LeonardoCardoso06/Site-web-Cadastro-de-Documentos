@@ -14,76 +14,169 @@
         </div>
         <h1>Cadastro de Documentos</h1>
       </header>
-        <form id="documentForm" enctype="multipart/form-data">
-          <div class="list">
-            <div class="form-group">
-  <label>CPF/CNH:</label>
-  <label class="file-upload-label" for="rgCnh">Selecionar arquivo</label>
-  <input type="file" id="rgCnh" name="rgCnh" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="rgCnhName">Nenhum arquivo selecionado</div>
-</div>
 
-<div class="form-group">
-  <label>Comprovante de Residência:</label>
-  <label class="file-upload-label" for="comprovanteResidencia">Selecionar arquivo</label>
-  <input type="file" id="comprovanteResidencia" name="comprovanteResidencia" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="comprovanteResidenciaName">Nenhum arquivo selecionado</div>
-</div>
+      <form id="documentForm" enctype="multipart/form-data">
+        <div class="list">
+          <!-- CPF/CNH com Frente e Verso -->
+          <div class="form-group">
+            <label>CPF/CNH:</label>
+            <div class="dual-upload">
+              <div class="upload-section">
+                <label class="file-upload-label" for="rgCnhFrente"
+                  >Selecionar Frente</label
+                >
+                <input
+                  type="file"
+                  id="rgCnhFrente"
+                  name="rgCnhFrente"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
+                <div class="file-name" id="rgCnhFrenteName">
+                  Nenhum arquivo selecionado
+                </div>
+              </div>
+              <div class="upload-section">
+                <label class="file-upload-label" for="rgCnhVerso"
+                  >Selecionar Verso</label
+                >
+                <input
+                  type="file"
+                  id="rgCnhVerso"
+                  name="rgCnhVerso"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
+                <div class="file-name" id="rgCnhVersoName">
+                  Nenhum arquivo selecionado
+                </div>
+              </div>
+            </div>
+          </div>
 
-<div class="form-group">
-  <label>Título de Eleitor:</label>
-  <label class="file-upload-label" for="tituloEleitor">Selecionar arquivo</label>
-  <input type="file" id="tituloEleitor" name="tituloEleitor" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="tituloEleitorName">Nenhum arquivo selecionado</div>
-</div>
+          <!-- Demais documentos -->
+          <div class="form-group">
+            <label>Comprovante de Residência:</label>
+            <label class="file-upload-label" for="comprovanteResidencia"
+              >Selecionar arquivo</label
+            >
+            <input
+              type="file"
+              id="comprovanteResidencia"
+              name="comprovanteResidencia"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <div class="file-name" id="comprovanteResidenciaName">
+              Nenhum arquivo selecionado
+            </div>
+          </div>
 
-<div class="form-group">
-  <label>Comprovante de Alistamento Militar/Reservista:</label>
-  <label class="file-upload-label" for="certidaoMilitar">Selecionar arquivo</label>
-  <input type="file" id="certidaoMilitar" name="certidaoMilitar" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="certidaoMilitarName">Nenhum arquivo selecionado</div>
-</div>
+          <div class="form-group">
+            <label>Título de Eleitor:</label>
+            <label class="file-upload-label" for="tituloEleitor"
+              >Selecionar arquivo</label
+            >
+            <input
+              type="file"
+              id="tituloEleitor"
+              name="tituloEleitor"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <div class="file-name" id="tituloEleitorName">
+              Nenhum arquivo selecionado
+            </div>
+          </div>
 
-<div class="form-group">
-  <label>Exame Médico Admissional:</label>
-  <label class="file-upload-label" for="exameMedico">Selecionar arquivo</label>
-  <input type="file" id="exameMedico" name="exameMedico" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="exameMedicoName">Nenhum arquivo selecionado</div>
-</div>
+          <div class="form-group">
+            <label>Comprovante de Alistamento Militar/Reservista:</label>
+            <label class="file-upload-label" for="certidaoMilitar"
+              >Selecionar arquivo</label
+            >
+            <input
+              type="file"
+              id="certidaoMilitar"
+              name="certidaoMilitar"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <div class="file-name" id="certidaoMilitarName">
+              Nenhum arquivo selecionado
+            </div>
+          </div>
 
-<div class="form-group">
-  <label>Histórico Escolar:</label>
-  <label class="file-upload-label" for="historicoEscolar">Selecionar arquivo</label>
-  <input type="file" id="historicoEscolar" name="historicoEscolar" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="historicoEscolarName">Nenhum arquivo selecionado</div>
-</div>
+          <div class="form-group">
+            <label>Exame Médico Admissional:</label>
+            <label class="file-upload-label" for="exameMedico"
+              >Selecionar arquivo</label
+            >
+            <input
+              type="file"
+              id="exameMedico"
+              name="exameMedico"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <div class="file-name" id="exameMedicoName">
+              Nenhum arquivo selecionado
+            </div>
+          </div>
 
-<div class="form-group">
-  <label>Qualificação Cadastral (Se houver):</label>
-  <label class="file-upload-label" for="pis">Selecionar arquivo</label>
-  <input type="file" id="pis" name="pis" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="pisName">Nenhum arquivo selecionado</div>
-</div>
+          <div class="form-group">
+            <label>Histórico Escolar:</label>
+            <label class="file-upload-label" for="historicoEscolar"
+              >Selecionar arquivo</label
+            >
+            <input
+              type="file"
+              id="historicoEscolar"
+              name="historicoEscolar"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <div class="file-name" id="historicoEscolarName">
+              Nenhum arquivo selecionado
+            </div>
+          </div>
 
-<div class="form-group">
-  <label>Carteira de Identidade Profissional (OAB/CRC - Se houver):</label>
-  <label class="file-upload-label" for="carteirinha">Selecionar arquivo</label>
-  <input type="file" id="carteirinha" name="carteirinha" accept=".pdf,.jpg,.jpeg,.png" />
-  <div class="file-name" id="carteirinhaName">Nenhum arquivo selecionado</div>
-</div>
- </form>
-<div class="painel-button">
-        <button onclick="window.location.href='Painelusuario.html'">
-          Painel do Usuário
-        </button>
+          <div class="form-group">
+            <label>Qualificação Cadastral (Se houver):</label>
+            <label class="file-upload-label" for="pis"
+              >Selecionar arquivo</label
+            >
+            <input
+              type="file"
+              id="pis"
+              name="pis"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <div class="file-name" id="pisName">Nenhum arquivo selecionado</div>
+          </div>
+
+          <div class="form-group">
+            <label
+              >Carteira de Identidade Profissional (OAB/CRC - Se houver):</label
+            >
+            <label class="file-upload-label" for="carteirinha"
+              >Selecionar arquivo</label
+            >
+            <input
+              type="file"
+              id="carteirinha"
+              name="carteirinha"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <div class="file-name" id="carteirinhaName">
+              Nenhum arquivo selecionado
+            </div>
+          </div>
         </div>
 
-
-          <div class="save-button">
-            <button type="submit">Salvar</button>
-          </div>
-       
-      </div>
+        <!-- Botões centralizados -->
+        <div class="button-group">
+          <button
+            type="button"
+            onclick="window.location.href='Painelusuario.html'"
+          >
+            Painel do Usuário
+          </button>
+          <button type="submit">Salvar</button>
+        </div>
+      </form>
     </div>
 
     <script src="../JS/Pagina4_Arquivos.js"></script>

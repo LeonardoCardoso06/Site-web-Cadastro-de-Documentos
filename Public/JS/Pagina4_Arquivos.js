@@ -17,7 +17,8 @@ document
     formData.append("userId", userId);
 
     const campos = [
-      "rgCnh",
+      "rgCnhFrente",
+      "rgCnhVerso",
       "comprovanteResidencia",
       "tituloEleitor",
       "certidaoMilitar",
@@ -80,7 +81,8 @@ function atualizarNomeArquivo(inputId, labelId) {
   });
 }
 
-atualizarNomeArquivo("rgCnh", "rgCnhName");
+atualizarNomeArquivo("rgCnhFrente", "rgCnhFrenteName");
+atualizarNomeArquivo("rgCnhVerso", "rgCnhVersoName");
 atualizarNomeArquivo("comprovanteResidencia", "comprovanteResidenciaName");
 atualizarNomeArquivo("tituloEleitor", "tituloEleitorName");
 atualizarNomeArquivo("certidaoMilitar", "certidaoMilitarName");

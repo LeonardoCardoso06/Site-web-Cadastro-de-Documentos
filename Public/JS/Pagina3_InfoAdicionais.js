@@ -46,10 +46,10 @@ document
       cpf: formData.get("cpf"),
       address: formData.get("address"),
       valeTransporte: formData.get("vt") === "sim",
-      numeroOnibus: formData.get("busQuantity") || null,
-      numeroTrem: formData.get("trainMetro") || null,
+      numeroOnibus: formData.get("busQuantity") || "",
+      numeroTrem: formData.get("trainMetro") || "",
       possuiDeficiencia: formData.get("disability") === "sim",
-      observacoes: formData.get("disabilityType") || null,
+      observacoes: formData.get("disabilityType") || "",
     };
 
     try {
